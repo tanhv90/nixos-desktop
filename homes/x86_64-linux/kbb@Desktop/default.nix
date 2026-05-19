@@ -19,6 +19,9 @@
     lazydocker.enable = true;
     nodejs.enable = true;
     cli-tools.enable = true;
+    onlyoffice.enable = true;
+    rustdesk.enable = true;
+    discord.enable = true;
   };
 
   home = {
