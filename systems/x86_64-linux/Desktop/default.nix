@@ -1,0 +1,137 @@
+# Desktop - Stationary PC (i7-13700F, RTX 3060, 32GB DDR4)
+{
+  inputs,
+  pkgs,
+  config,
+  ...
+}:
+{
+  imports = [
+    inputs.disko.nixosModules.disko
+    inputs.sops-nix.nixosModules.sops
+    inputs.fcitx5-lotus.nixosModules.fcitx5-lotus
+    ./hardware.nix
+    ./disk.nix
+  ];
+
+  # Enable modules
+  kbb = {
+    docker.enable = true;
+    fcitx5 = {
+      enable = true;
+      users = [ "kbb" ];
+    };
+    tailscale.enable = true;
+    cloudflared = {
+      enable = true;
+      tokenFile = config.sops.secrets."cloudflared/tunnel_token".path;
+    };
+    ssh.enable = true;
+  };
+
+  # Timezone
+  time.timeZone = "Asia/Ho_Chi_Minh";
+
+  # Bootloader
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+    efi.efiSysMountPoint = "/boot";
+  };
+
+  # Networking
+  networking = {
+    hostName = "Desktop";
+    networkmanager.enable = true;
+  };
+
+  # KDE Plasma 6 + Wayland
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
+
+  # Audio (PipeWire)
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
+
+  # NVIDIA proprietary drivers
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware = {
+    bluetooth.enable = true;
+
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
+
+    nvidia = {
+      modesetting.enable = true;
+      open = false;
+      nvidiaSettings = true;
+    };
+  };
+
+  # NTFS data partition (second NVMe)
+  fileSystems."/mnt/data" = {
+    device = "/dev/disk/by-uuid/4F39D88A0D52E8C5";
+    fsType = "ntfs3";
+    options = [
+      "defaults"
+      "nofail"
+      "uid=1000"
+      "gid=100"
+    ];
+  };
+
+  # SOPS secrets
+  sops = {
+    defaultSopsFile = ../../../secrets/secrets.yaml;
+    age.keyFile = "/var/lib/sops/age/keys.txt";
+    secrets."user/kbb_hashed_password".neededForUsers = true;
+    secrets."cloudflared/tunnel_token" = { };
+  };
+
+  # User account
+  users.mutableUsers = false;
+  users.users.kbb = {
+    isNormalUser = true;
+    hashedPasswordFile = "/run/secrets-for-users/user/kbb_hashed_password";
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    shell = pkgs.fish;
+  };
+
+  programs.fish.enable = true;
+
+  # Nix settings
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-users = [ "root" "kbb" ];
+    auto-optimise-store = true;
+  };
+
+  # System packages (essentials only — apps go in home-manager)
+  environment.systemPackages = with pkgs; [
+    git
+    vim
+    firefox
+    ntfs3g
+    pciutils
+    usbutils
+    lm_sensors
+    smartmontools
+  ];
+
+  system.stateVersion = "24.11";
+}
