@@ -14,6 +14,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.rustdesk ];
+    home.packages = [ pkgs.rustdesk-flutter ];
   };
 }

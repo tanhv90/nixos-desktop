@@ -57,6 +57,13 @@
     wayland.enable = true;
   };
 
+  # XDG desktop portal — required for RustDesk PipeWire screen capture on Wayland
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+    config.common.default = "kde";
+  };
+
   # Audio (PipeWire)
   security.rtkit.enable = true;
   services.pipewire = {
