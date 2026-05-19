@@ -17,6 +17,8 @@
     mpv.enable = true;
     obs.enable = true;
     lazydocker.enable = true;
+    nodejs.enable = true;
+    cli-tools.enable = true;
   };
 
   home = {
