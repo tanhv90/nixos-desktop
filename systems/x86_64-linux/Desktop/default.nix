@@ -21,7 +21,12 @@
       enable = true;
       users = [ "kbb" ];
     };
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets."tailscale/auth_key".path;
+      exitNode = true;
+      ssh = true;
+    };
     cloudflared = {
       enable = true;
       tokenFile = config.sops.secrets."cloudflared/tunnel_token".path;
@@ -98,6 +103,7 @@
     age.keyFile = "/var/lib/sops/age/keys.txt";
     secrets."user/kbb_hashed_password".neededForUsers = true;
     secrets."cloudflared/tunnel_token" = { };
+    secrets."tailscale/auth_key" = { };
   };
 
   # User account

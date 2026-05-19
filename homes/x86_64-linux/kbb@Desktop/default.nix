@@ -22,6 +22,7 @@
   home = {
     sessionVariables = {
       EDITOR = "nvim";
+      SSH_AUTH_SOCK = "$HOME/.1password/agent.sock";
     };
 
     sessionPath = [
