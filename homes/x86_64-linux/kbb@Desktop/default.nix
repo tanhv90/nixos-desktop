@@ -18,6 +18,7 @@
     obs.enable = true;
     lazydocker.enable = true;
     nodejs.enable = true;
+    python.enable = true;
     cli-tools.enable = true;
     onlyoffice.enable = true;
     rustdesk.enable = true;

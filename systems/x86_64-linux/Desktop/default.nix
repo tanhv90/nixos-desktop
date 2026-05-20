@@ -129,6 +129,7 @@
     hashedPasswordFile = "/run/secrets-for-users/user/kbb_hashed_password";
     extraGroups = [ "wheel" "networkmanager" "docker" ];
     shell = pkgs.fish;
+    linger = true;
   };
 
   programs.fish.enable = true;
