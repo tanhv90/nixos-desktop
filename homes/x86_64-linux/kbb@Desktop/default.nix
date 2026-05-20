@@ -28,6 +28,9 @@
     sessionVariables = {
       EDITOR = "nvim";
       SSH_AUTH_SOCK = "$HOME/.1password/agent.sock";
+      # Make Chromium-family browsers (Edge, Chrome) run natively on Wayland
+      # instead of XWayland — fixes flicker on KDE Plasma 6 + NVIDIA.
+      NIXOS_OZONE_WL = "1";
     };
 
     sessionPath = [

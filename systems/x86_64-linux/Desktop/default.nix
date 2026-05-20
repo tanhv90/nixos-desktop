@@ -32,6 +32,8 @@
       tokenFile = config.sops.secrets."cloudflared/tunnel_token".path;
     };
     ssh.enable = true;
+    fonts.enable = true;
+    voicevox-engine.enable = true;
   };
 
   # Timezone
@@ -89,6 +91,13 @@
       modesetting.enable = true;
       open = false;
       nvidiaSettings = true;
+      # Frozen 580 branch. Has explicit-sync (≥555) so KDE Plasma 6 Wayland
+      # works without Qt-Wayland xdg_surface crashes (Telegram, etc.). Pinned
+      # to legacy_580 rather than `stable` so `nix flake update` only bumps
+      # within the 580.x line — no surprise jumps to 600+. CUDA 12 Docker
+      # images run via nvidia-container-toolkit forward-compat — verify with
+      # `docker run --gpus all <image> nvidia-smi` after rebuild.
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
   };
 

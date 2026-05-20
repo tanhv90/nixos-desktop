@@ -17,6 +17,7 @@ in
       enable = true;
       enableFishIntegration = true;
       settings = {
+        font-family = "JetBrainsMono Nerd Font";
         font-size = 13;
         theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
         window-decoration = false;
