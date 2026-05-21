@@ -23,6 +23,13 @@
     onlyoffice.enable = true;
     rustdesk.enable = true;
     discord.enable = true;
+    opencode = {
+      enable = true;
+      port = 12121;
+      hostname = "0.0.0.0";
+      cors = "*";
+      auth.passwordFile = "/run/secrets/opencode/password";
+    };
   };
 
   home = {

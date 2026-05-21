@@ -120,6 +120,9 @@
     secrets."user/kbb_hashed_password".neededForUsers = true;
     secrets."cloudflared/tunnel_token" = { };
     secrets."tailscale/auth_key" = { };
+    secrets."opencode/password" = {
+      owner = "kbb";
+    };
   };
 
   # User account
@@ -148,6 +151,7 @@
   environment.systemPackages = with pkgs; [
     git
     vim
+    sops
     firefox
     ntfs3g
     pciutils

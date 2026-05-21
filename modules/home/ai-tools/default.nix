@@ -10,13 +10,10 @@ let
 in
 {
   options.${namespace}.ai-tools = {
-    enable = lib.mkEnableOption "AI coding tools (claude-code, opencode)";
+    enable = lib.mkEnableOption "Claude Code CLI";
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      claude-code
-      opencode
-    ];
+    home.packages = [ pkgs.claude-code ];
   };
 }
