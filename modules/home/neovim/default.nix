@@ -62,6 +62,9 @@ in
             gopls.enable = true;
             lua_ls.enable = true;
             nixd.enable = true;
+            yamlls.enable = true;
+            dockerls.enable = true;
+            jsonls.enable = true;
           };
           keymaps = {
             diagnostic = {
@@ -79,6 +82,29 @@ in
           };
         };
 
+        cmp = {
+          enable = true;
+          settings = {
+            sources = [
+              { name = "nvim_lsp"; }
+              { name = "luasnip"; }
+              { name = "path"; }
+              { name = "buffer"; }
+            ];
+            mapping = {
+              "<C-n>" = "cmp.mapping.select_next_item()";
+              "<C-p>" = "cmp.mapping.select_prev_item()";
+              "<C-y>" = "cmp.mapping.confirm({ select = true })";
+              "<C-e>" = "cmp.mapping.abort()";
+              "<C-Space>" = "cmp.mapping.complete()";
+            };
+          };
+        };
+
+        luasnip.enable = true;
+
+        lspkind.enable = true;
+
         treesitter.enable = true;
 
         conform-nvim = {
@@ -95,6 +121,7 @@ in
               typescriptreact = [ "prettierd" ];
               css = [ "prettierd" ];
               json = [ "prettierd" ];
+              yaml = [ "prettierd" ];
               markdown = [ "prettierd" ];
               html = [ "prettierd" ];
             };
@@ -143,6 +170,26 @@ in
             autochdir = true;
           };
         };
+
+        comment.enable = true;
+
+        surround.enable = true;
+
+        indent-blankline.enable = true;
+
+        todo-comments.enable = true;
+
+        oil.enable = true;
+
+        undotree.enable = true;
+
+        dap = {
+          enable = true;
+          extensions = {
+            dap-ui.enable = true;
+            dap-virtual-text.enable = true;
+          };
+        };
       };
 
       keymaps = [
@@ -183,6 +230,16 @@ in
           options.desc = "Toggle file tree";
         }
         {
+          key = "-";
+          action = "<cmd>Oil<CR>";
+          options.desc = "Oil file explorer";
+        }
+        {
+          key = "<leader>u";
+          action = "<cmd>UndotreeToggle<CR>";
+          options.desc = "Toggle undotree";
+        }
+        {
           key = "<leader>ff";
           action = "<cmd>Telescope find_files<CR>";
           options.desc = "Find files";
@@ -201,6 +258,31 @@ in
           key = "<leader>fh";
           action = "<cmd>Telescope help_tags<CR>";
           options.desc = "Help tags";
+        }
+        {
+          key = "<leader>db";
+          action = "<cmd>DapToggleBreakpoint<CR>";
+          options.desc = "Toggle breakpoint";
+        }
+        {
+          key = "<leader>dc";
+          action = "<cmd>DapContinue<CR>";
+          options.desc = "Continue / start debug";
+        }
+        {
+          key = "<leader>do";
+          action = "<cmd>DapStepOver<CR>";
+          options.desc = "Step over";
+        }
+        {
+          key = "<leader>di";
+          action = "<cmd>DapStepInto<CR>";
+          options.desc = "Step into";
+        }
+        {
+          key = "<leader>dr";
+          action = "<cmd>DapToggleRepl<CR>";
+          options.desc = "Toggle REPL";
         }
         {
           key = "<C-h>";
