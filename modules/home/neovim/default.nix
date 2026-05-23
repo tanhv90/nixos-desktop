@@ -182,14 +182,6 @@ in
         oil.enable = true;
 
         undotree.enable = true;
-
-        dap = {
-          enable = true;
-        };
-
-        dap-ui.enable = true;
-
-        dap-virtual-text.enable = true;
       };
 
       keymaps = [
@@ -258,31 +250,6 @@ in
           key = "<leader>fh";
           action = "<cmd>Telescope help_tags<CR>";
           options.desc = "Help tags";
-        }
-        {
-          key = "<leader>db";
-          action = "<cmd>DapToggleBreakpoint<CR>";
-          options.desc = "Toggle breakpoint";
-        }
-        {
-          key = "<leader>dc";
-          action = "<cmd>DapContinue<CR>";
-          options.desc = "Continue / start debug";
-        }
-        {
-          key = "<leader>do";
-          action = "<cmd>DapStepOver<CR>";
-          options.desc = "Step over";
-        }
-        {
-          key = "<leader>di";
-          action = "<cmd>DapStepInto<CR>";
-          options.desc = "Step into";
-        }
-        {
-          key = "<leader>dr";
-          action = "<cmd>DapToggleRepl<CR>";
-          options.desc = "Toggle REPL";
         }
         {
           key = "<C-h>";
