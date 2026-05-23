@@ -10,12 +10,12 @@ let
 in
 {
   options.${namespace}.nodejs = {
-    enable = lib.mkEnableOption "Node.js 25 toolchain";
+    enable = lib.mkEnableOption "Node.js 24 toolchain";
   };
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
-      nodejs_25
+      nodejs_24
       bun
     ];
   };
