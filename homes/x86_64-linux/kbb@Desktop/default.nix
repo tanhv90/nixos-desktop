@@ -23,6 +23,7 @@
     onlyoffice.enable = true;
     rustdesk.enable = true;
     discord.enable = true;
+    neovim.enable = true;
     opencode = {
       enable = true;
       port = 12121;

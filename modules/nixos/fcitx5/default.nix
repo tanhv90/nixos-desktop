@@ -35,7 +35,7 @@ in
       users = cfg.users;
       # Force fallback to kdePackages.extra-cmake-modules
       # (top-level extra-cmake-modules alias was removed in nixpkgs-unstable).
-      package = inputs.fcitx5-lotus.packages.${pkgs.system}.fcitx5-lotus.override {
+      package = inputs.fcitx5-lotus.packages.${pkgs.stdenv.hostPlatform.system}.fcitx5-lotus.override {
         extra-cmake-modules = null;
       };
     };

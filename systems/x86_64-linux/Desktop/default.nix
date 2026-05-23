@@ -33,7 +33,6 @@
     };
     ssh.enable = true;
     fonts.enable = true;
-    voicevox-engine.enable = true;
   };
 
   # Timezone
@@ -152,6 +151,7 @@
     git
     vim
     sops
+    ffmpeg
     firefox
     ntfs3g
     pciutils
