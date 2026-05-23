@@ -33,7 +33,6 @@
     };
     ssh.enable = true;
     fonts.enable = true;
-    rustdesk.enable = true;
   };
 
   # Timezone
