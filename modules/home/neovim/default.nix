@@ -173,7 +173,7 @@ in
 
         comment.enable = true;
 
-        surround.enable = true;
+        vim-surround.enable = true;
 
         indent-blankline.enable = true;
 
@@ -185,11 +185,11 @@ in
 
         dap = {
           enable = true;
-          extensions = {
-            dap-ui.enable = true;
-            dap-virtual-text.enable = true;
-          };
         };
+
+        dap-ui.enable = true;
+
+        dap-virtual-text.enable = true;
       };
 
       keymaps = [
