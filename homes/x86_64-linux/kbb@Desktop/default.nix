@@ -23,6 +23,7 @@
     onlyoffice.enable = true;
     rustdesk.enable = true;
     discord.enable = true;
+    appimage.enable = true;
     neovim.enable = true;
     opencode = {
       enable = true;
