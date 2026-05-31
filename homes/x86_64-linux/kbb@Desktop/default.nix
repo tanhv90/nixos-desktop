@@ -11,7 +11,13 @@
     vscode.enable = true;
     git.enable = true;
     browsers.enable = true;
-    ai-tools.enable = true;
+    ai-tools = {
+      enable = true;
+      daemon = {
+        enable = true;
+        remoteAccess = true;
+      };
+    };
     telegram.enable = true;
     _1password.enable = true;
     mpv.enable = true;
