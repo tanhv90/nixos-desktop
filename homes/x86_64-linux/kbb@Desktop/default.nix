@@ -56,6 +56,8 @@
     file."external".source = config.lib.file.mkOutOfStoreSymlink "/mnt/data";
 
     stateVersion = "24.11";
+
+    enableNixpkgsReleaseCheck = false;
   };
 
   programs.home-manager.enable = true;

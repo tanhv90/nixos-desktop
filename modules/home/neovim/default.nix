@@ -19,6 +19,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.nixvim = {
       enable = true;
+      nixpkgs.source = inputs.nixvim.inputs.nixpkgs;
 
       defaultEditor = true;
 
