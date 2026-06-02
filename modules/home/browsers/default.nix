@@ -19,6 +19,8 @@ in
       inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       pkgs.microsoft-edge
       pkgs.google-chrome
+      pkgs.vivaldi
+      pkgs.vivaldi-ffmpeg-codecs
     ];
   };
 }
