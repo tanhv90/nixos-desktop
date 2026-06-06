@@ -3,7 +3,8 @@
 {
   # Enable modules
   kbb = {
-    fish.enable = true;
+    fish.enable = false; # temporarily disabled in favor of zsh
+    zsh.enable = true;
     starship.enable = true;
     zellij.enable = true;
     ghostty.enable = true;

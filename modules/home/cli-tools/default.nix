@@ -62,5 +62,14 @@ in
       la = "eza -la";
       lt = "eza --tree";
     };
+
+    programs.zsh.shellAliases = {
+      cat = "bat";
+      manp = "batman";
+      ls = "eza";
+      ll = "eza -l";
+      la = "eza -la";
+      lt = "eza --tree";
+    };
   };
 }

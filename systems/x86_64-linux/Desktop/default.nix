@@ -130,11 +130,11 @@
     isNormalUser = true;
     hashedPasswordFile = "/run/secrets-for-users/user/kbb_hashed_password";
     extraGroups = [ "wheel" "networkmanager" "docker" ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
     linger = true;
   };
 
-  programs.fish.enable = true;
+  programs.zsh.enable = true;
 
   # Nix settings
   nix.settings = {
