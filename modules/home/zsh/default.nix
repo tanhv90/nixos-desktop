@@ -16,7 +16,10 @@ in
     programs.zsh = {
       enable = true;
       enableCompletion = true;
-      autosuggestion.enable = true;
+      autosuggestion = {
+        enable = true;
+        strategy = [ "history" "completion" ];
+      };
       syntaxHighlighting.enable = true;
 
       history = {
@@ -39,6 +42,9 @@ in
         setopt nomatch
         setopt notify
         unsetopt beep
+
+        bindkey '^[[C' autosuggest-accept
+        bindkey '^[[1;5C' forward-word
       '';
     };
   };
