@@ -31,6 +31,7 @@
       enable = true;
       tokenFile = config.sops.secrets."cloudflared/tunnel_token".path;
     };
+    cups.enable = true;
     ssh.enable = true;
     fonts.enable = true;
   };
