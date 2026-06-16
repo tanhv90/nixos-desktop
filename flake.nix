@@ -38,6 +38,7 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     llm-agents = {
@@ -45,10 +46,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    opencode = {
-      url = "github:anomalyco/opencode/dev";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
