@@ -27,11 +27,13 @@
     nodejs.enable = true;
     python.enable = true;
     cli-tools.enable = true;
+    direnv.enable = true;
     onlyoffice.enable = true;
     rustdesk.enable = true;
     discord.enable = true;
     appimage.enable = true;
     neovim.enable = true;
+    proton-vpn.enable = true;
     opencode = {
       enable = true;
       port = 12121;
