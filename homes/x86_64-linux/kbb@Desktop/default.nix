@@ -29,6 +29,7 @@
     cli-tools.enable = true;
     direnv.enable = true;
     onlyoffice.enable = true;
+    calibre.enable = true;
     rustdesk.enable = true;
     discord.enable = true;
     appimage.enable = true;

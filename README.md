@@ -41,7 +41,7 @@ flake.nix          → defines inputs, snowfall-lib discovers the rest
 | **Secrets** | SOPS (age), decrypted at boot before user creation |
 | **User env** | Fish + Starship, Ghostty + Zellij, VS Code |
 | **Dev tools** | Node.js 25 + bun, Python 3.12 + uv, fd + ripgrep, lazydocker |
-| **Apps** | 1Password, Zen Browser, Telegram, Discord, OBS, mpv, ONLYOFFICE, RustDesk |
+| **Apps** | 1Password, Zen Browser, Telegram, Discord, OBS, mpv, ONLYOFFICE, Calibre, RustDesk |
 | **AI** | claude-code, opencode |
 | **Data** | `/mnt/data` → `~/external` (out-of-store symlink) |
 
