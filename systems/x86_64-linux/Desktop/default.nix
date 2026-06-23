@@ -137,6 +137,12 @@
 
   programs.zsh.enable = true;
 
+  # Nix LD — provide standard FHS lib paths for pre-built binaries (uv, etc.)
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+  ];
+
   # Nix settings
   nix.settings = {
     experimental-features = [

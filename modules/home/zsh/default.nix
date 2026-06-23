@@ -45,6 +45,17 @@ in
 
         bindkey '^[[C' autosuggest-accept
         bindkey '^[[1;5C' forward-word
+
+        # Generate .envrc for Nix projects and allow direnv
+        mkflake() {
+          echo "use flake" > .envrc
+          direnv allow
+        }
+
+        mknix() {
+          echo "use nix" > .envrc
+          direnv allow
+        }
       '';
     };
   };

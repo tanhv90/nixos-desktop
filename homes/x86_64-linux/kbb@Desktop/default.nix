@@ -1,5 +1,5 @@
 # Home configuration for kbb on Desktop
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   # Enable modules
   kbb = {
@@ -51,9 +51,12 @@
       # Make Chromium-family browsers (Edge, Chrome) run natively on Wayland
       # instead of XWayland — fixes flicker on KDE Plasma 6 + NVIDIA.
       NIXOS_OZONE_WL = "1";
+      # Provide libstdc++ for pre-built Python wheels (numpy/chromadb via uv)
+      LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib\${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}";
     };
 
     sessionPath = [
+      "$HOME/.local/bin"
       "$HOME/.cargo/bin"
     ];
 
