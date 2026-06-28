@@ -7,6 +7,7 @@
     zsh.enable = true;
     starship.enable = true;
     zellij.enable = true;
+    herdr.enable = true;
     ghostty.enable = true;
     fastfetch.enable = true;
     vscode.enable = true;
