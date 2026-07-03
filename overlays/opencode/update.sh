@@ -17,23 +17,28 @@ echo "Nix flake root: $ROOT"
 
 # --- fetch source hash ---
 echo "Fetching source hash for opencode v$VERSION..."
-RAW_HASH=$(nix-prefetch-url --unpack "https://github.com/anomalyco/opencode/archive/refs/tags/v$VERSION.tar.gz" 2>/dev/null) || {
-  # fallback: use nix-prefetch-github
-  RAW_HASH=$(nix-prefetch-github anomalyco opencode --rev "v$VERSION" 2>/dev/null | jq -r '.hash' 2>/dev/null) || true
-}
+# prefer nix-prefetch-github: .hash is already base64 SRI (works with sha256- prefix)
+SRC_HASH=$(nix-prefetch-github anomalyco opencode --rev "v$VERSION" 2>/dev/null | jq -r '.hash' 2>/dev/null) || true
 
-if [[ -z "$RAW_HASH" ]]; then
-  echo "Could not prefetch source hash. Falling back to placeholder."
-  echo "Run the build and copy the hash from the error message."
-  RAW_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
-else
-  RAW_HASH="sha256-$RAW_HASH"
+if [[ -z "$SRC_HASH" ]]; then
+  # fallback: nix-prefetch-url returns base32, convert to SRI base64
+  echo "nix-prefetch-github failed, trying nix-prefetch-url..."
+  BASE32_HASH=$(nix-prefetch-url --unpack "https://github.com/anomalyco/opencode/archive/refs/tags/v$VERSION.tar.gz" 2>/dev/null) || true
+  if [[ -n "$BASE32_HASH" ]]; then
+    SRC_HASH=$(nix hash to-sri --type sha256 "$BASE32_HASH" 2>/dev/null | sed 's/^sha256-//') || true
+  fi
 fi
 
+if [[ -z "$SRC_HASH" ]]; then
+  die "Could not prefetch source hash for v$VERSION"
+fi
+
+SRC_HASH="sha256-$SRC_HASH"
+
 # --- inject dummy node_modules hash, then build to discover real one ---
-echo "Updating $DEFAULT_NIX with version=$VERSION, src_hash=$RAW_HASH..."
+echo "Updating $DEFAULT_NIX with version=$VERSION, src_hash=$SRC_HASH..."
 sed -i -E "s/version = \"[^\"]+\";/version = \"$VERSION\";/" "$DEFAULT_NIX"
-sed -i -E "s/hash = \"sha256-[^\"]+\";/hash = \"$RAW_HASH\";/" "$DEFAULT_NIX"
+sed -i -E "s/hash = \"sha256-[^\"]+\";/hash = \"$SRC_HASH\";/" "$DEFAULT_NIX"
 # set a dummy node_modules hash so the build will fail and tell us the real one
 sed -i -E 's/outputHash = "sha256-[^"]+";/outputHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";/' "$DEFAULT_NIX"
 
