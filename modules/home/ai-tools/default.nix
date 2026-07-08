@@ -8,11 +8,13 @@
 }:
 let
   cfg = config.${namespace}.ai-tools;
-  droid = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.droid;
+  llm-agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  droid = llm-agents.droid;
+  antigravity-cli = llm-agents.antigravity-cli;
 in
 {
   options.${namespace}.ai-tools = {
-    enable = lib.mkEnableOption "AI dev tools (Claude Code, Droid)";
+    enable = lib.mkEnableOption "AI dev tools (Claude Code, Droid, Antigravity CLI)";
     daemon = {
       enable = lib.mkEnableOption "Droid daemon (background service)";
       remoteAccess = lib.mkEnableOption "Allow remote access to droid daemon";
@@ -23,6 +25,7 @@ in
     home.packages = [
       pkgs.claude-code
       droid
+      antigravity-cli
     ];
 
     systemd.user.services.droid = lib.mkIf cfg.daemon.enable {

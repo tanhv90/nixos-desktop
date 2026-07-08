@@ -19,5 +19,9 @@ in
     programs.fish.shellAliases = {
       lzdk = "lazydocker";
     };
+
+    programs.zsh.shellAliases = {
+      lzdk = "lazydocker";
+    };
   };
 }
