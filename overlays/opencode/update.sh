@@ -54,7 +54,7 @@ GOT_HASH=$(grep -oP 'got:\s+\Ksha256-[A-Za-z0-9+/=]+' "$BUILD_LOG" | tail -1 || 
 
 if [[ -n "$GOT_HASH" ]]; then
   echo "Found node_modules hash: $GOT_HASH"
-  sed -i -E "s/outputHash = \"sha256-[^\"]+\";/outputHash = \"$GOT_HASH\";/" "$DEFAULT_NIX"
+  sed -i -E "s|outputHash = \"sha256-[^\"]+\";|outputHash = \"$GOT_HASH\";|" "$DEFAULT_NIX"
 else
   echo "Could not auto-detect node_modules hash. Check $BUILD_LOG."
   rm -f "$BUILD_LOG"
