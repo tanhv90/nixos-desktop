@@ -38,7 +38,7 @@ SRC_HASH="sha256-$SRC_HASH"
 # --- inject dummy node_modules hash, then build to discover real one ---
 echo "Updating $DEFAULT_NIX with version=$VERSION, src_hash=$SRC_HASH..."
 sed -i -E "s/version = \"[^\"]+\";/version = \"$VERSION\";/" "$DEFAULT_NIX"
-sed -i -E "s/hash = \"sha256-[^\"]+\";/hash = \"$SRC_HASH\";/" "$DEFAULT_NIX"
+sed -i -E "s|hash = \"sha256-[^\"]+\";|hash = \"$SRC_HASH\";|" "$DEFAULT_NIX"
 # set a dummy node_modules hash so the build will fail and tell us the real one
 sed -i -E 's/outputHash = "sha256-[^"]+";/outputHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";/' "$DEFAULT_NIX"
 

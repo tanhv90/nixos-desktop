@@ -33,6 +33,7 @@
     };
     cups.enable = true;
     ssh.enable = true;
+    sunshine.enable = true;
     fonts.enable = true;
   };
 
@@ -130,7 +131,7 @@
   users.users.kbb = {
     isNormalUser = true;
     hashedPasswordFile = "/run/secrets-for-users/user/kbb_hashed_password";
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" "uinput" ];
     shell = pkgs.zsh;
     linger = true;
   };
@@ -144,13 +145,20 @@
   ];
 
   # Nix settings
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    trusted-users = [ "root" "kbb" ];
-    auto-optimise-store = true;
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [ "root" "kbb" ];
+      auto-optimise-store = true;
+    };
   };
 
   # System packages (essentials only — apps go in home-manager)
