@@ -131,7 +131,7 @@
   users.users.kbb = {
     isNormalUser = true;
     hashedPasswordFile = "/run/secrets-for-users/user/kbb_hashed_password";
-    extraGroups = [ "wheel" "networkmanager" "docker" "uinput" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" "uinput" "input" ];
     shell = pkgs.zsh;
     linger = true;
   };
