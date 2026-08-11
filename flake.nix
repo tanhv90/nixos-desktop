@@ -6,10 +6,6 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
-    };
-
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -50,31 +46,50 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
   outputs =
-    inputs:
+    { self, nixpkgs, home-manager, ... }@inputs:
     let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
-
-        snowfall = {
-          meta = {
-            name = "kbb-desktop";
-            title = "kbb's Desktop NixOS configuration";
-          };
-          namespace = "kbb";
-        };
-      };
+      system = "x86_64-linux";
+      # Module namespace — modules/{nixos,home}/* open options under
+      # config.${namespace}.<name> (previously handled by snowfall-lib).
+      namespace = "kbb";
     in
-    lib.mkFlake {
-      inherit inputs;
-      src = ./.;
+    {
+      nixosConfigurations.Desktop = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {
+          inherit inputs namespace;
+        };
+        modules = [
+          ./systems/x86_64-linux/Desktop
+          ./modules/nixos
 
-      channels-config = {
-        allowUnfree = true;
+          {
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.overlays = [
+              ((import ./overlays/opencode) { })
+            ];
+          }
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              # Auto-load every modules/home/* module into the user config,
+              # mirroring snowfall-lib's module discovery.
+              sharedModules = [
+                ./modules/home
+              ];
+              users.kbb = import ./homes/x86_64-linux/${"kbb@Desktop"};
+              extraSpecialArgs = {
+                inherit inputs namespace;
+              };
+            };
+          }
+        ];
       };
     };
 }

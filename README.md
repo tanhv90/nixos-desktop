@@ -1,6 +1,6 @@
-# kbb's Desktop NixOS Configuration
+# kbb's Desktop
 
-NixOS flake using **snowfall-lib** — one repo, multiple hosts, modular config.
+NixOS flake — one repo, modular config. Auto-discovers `modules/{nixos,home}/*`.
 
 ## Hardware
 
@@ -9,72 +9,95 @@ NixOS flake using **snowfall-lib** — one repo, multiple hosts, modular config.
 | CPU | Intel i7-13700F |
 | GPU | NVIDIA RTX 3060 (proprietary, legacy_580) |
 | RAM | 32GB DDR4 |
-| NVMe 0 | NixOS — 512M ESP + 32G swap + btrfs root (`@`, `@home`) |
-| NVMe 1 | NTFS data → `/mnt/data` (UUID: `4F39D88A0D52E8C5`) |
+| Disk | NVMe 0: ESP + swap + btrfs (`@`, `@home`) — NVMe 1: NTFS → `/mnt/data` |
 
-> NVMe names can swap between boots. NTFS mount uses UUID. Disko uses partlabels for fstab (stable).
-
-## Architecture
+## Structure
 
 ```
-flake.nix          → defines inputs, snowfall-lib discovers the rest
-├── systems/       → one folder per host (NixOS config)
-├── homes/         → one folder per user@host (home-manager)
+flake.nix
+├── systems/     → one folder per host (NixOS)
+├── homes/       → one folder per user@host (home-manager)
 ├── modules/
-│   ├── nixos/     → reusable system modules (7)
-│   └── home/      → reusable user modules (20)
-└── secrets/       → SOPS-encrypted (age key)
+│   ├── nixos/   → system modules (auto-loaded)
+│   └── home/    → user modules (auto-loaded)
+├── overlays/    → package overlays (opencode)
+└── secrets/     → SOPS-encrypted (age)
 ```
 
-**Key idea:** Create a module once in `modules/`, toggle it per-host with `kbb.<name>.enable = true`. Snowfall auto-discovers — no imports.
+Modules are auto-discovered — no manual imports. Each module exposes `kbb.<name>.enable = true`.
 
-## Stack Summary
+## AI Tools
 
-| Layer | What |
-|-------|------|
-| **OS** | NixOS unstable, systemd-boot, btrfs (zstd) |
-| **Display** | KDE Plasma 6, SDDM (Wayland) |
-| **GPU** | NVIDIA legacy_580 + nvidia-container-toolkit |
-| **Audio** | PipeWire (ALSA, PulseAudio, JACK) |
-| **Network** | NetworkManager, Tailscale (exit node), Cloudflare tunnel, SSH |
-| **Input** | fcitx5 + Lotus (Vietnamese) |
-| **Secrets** | SOPS (age), decrypted at boot before user creation |
-| **User env** | Fish + Starship, Ghostty + Zellij, VS Code |
-| **Dev tools** | Node.js 25 + bun, Python 3.12 + uv, fd + ripgrep, lazydocker |
-| **Apps** | 1Password, Zen Browser, Telegram, Discord, OBS, mpv, ONLYOFFICE, Calibre, RustDesk |
-| **AI** | claude-code, opencode |
-| **Data** | `/mnt/data` → `~/external` (out-of-store symlink) |
+All from `github:numtide/llm-agents.nix`. Each tool has its own toggle under the master `ai-tools.enable`:
 
-## Flake Inputs
+```nix
+kbb.ai-tools = {
+  enable = true;
+  droid.enable = true;             # Droid + daemon
+  pi.enable = true;                # Pi
+  antigravity-cli.enable = true;   # Antigravity CLI
+  claude-code.enable = true;       # Claude Code
+  daemon.enable = true;            # Droid background service
+  daemon.remoteAccess = true;
+};
+```
 
-| Input | Purpose |
-|-------|---------|
-| `nixpkgs` | nixos-unstable |
-| `home-manager` | User environment |
-| `snowfall-lib` | Flake structure + auto-discovery |
-| `sops-nix` | Secret encryption |
-| `disko` | Declarative partitioning |
-| `zen-browser` | Zen browser flake |
-| `fcitx5-lotus` | Vietnamese input |
+## Flake Reference (vanilla, no snowfall-lib)
+
+```nix
+{
+  description = "kbb's Desktop NixOS configuration";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # ... other inputs follow nixpkgs ...
+  };
+
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: let
+    system = "x86_64-linux";
+    namespace = "kbb";
+  in {
+    nixosConfigurations.Desktop = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit inputs namespace; };
+      modules = [
+        ./systems/x86_64-linux/Desktop
+        ./modules/nixos                      # auto-loads all nixos modules
+        { nixpkgs.config.allowUnfree = true; }
+        { nixpkgs.overlays = [ (import ./overlays/opencode { }) ]; }
+
+        home-manager.nixosModules.home-manager {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            sharedModules = [ ./modules/home ];  # auto-loads all home modules
+            users.kbb = import ./homes/x86_64-linux/kbb@Desktop;
+            extraSpecialArgs = { inherit inputs namespace; };
+          };
+        }
+      ];
+    };
+  };
+}
+```
 
 ## Usage
 
 ```bash
-sudo nixos-rebuild switch --flake .#Desktop    # apply config
-nix flake update                                # update all inputs
+sudo nixos-rebuild switch --flake .#Desktop
+nix flake update
 ```
 
 ## For a New Host
 
-Create `systems/x86_64-linux/<Host>/` and `homes/x86_64-linux/kbb@<Host>/`, enable only the modules you need.
+Add `systems/x86_64-linux/<Host>/` and `homes/x86_64-linux/kbb@<Host>/`, enable only the modules you need in the host config.
 
 ## Docs
 
-- [Fresh install](docs/install.md) — step-by-step for a new machine
-- [SOPS secrets](docs/sops.md) — boot sequence, paths, key management
-- [Chroot rebuild](docs/chroot-rebuild.md) — rebuild from live ISO when the system won't boot
-
-## Known Issues
-
-- **Chrome/Edge crash on NixOS 26.05** — `chrome_crashpad_handler: --database is required` causes SIGTRAP. Use Firefox or Zen.
-- **NVMe name swapping** — `nvme0n1`/`nvme1n1` can flip. NTFS uses UUID. Disko uses partlabels. The disk attribute name in `disk.nix` must match the partlabel prefix on disk.
+- [Fresh install](docs/install.md)
+- [SOPS secrets](docs/sops.md)
+- [Chroot rebuild](docs/chroot-rebuild.md)

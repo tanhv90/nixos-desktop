@@ -15,6 +15,10 @@
     browsers.enable = true;
     ai-tools = {
       enable = true;
+      droid.enable = true;
+      pi.enable = true;
+      antigravity-cli.enable = true;
+      claude-code.enable = true;
       daemon = {
         enable = true;
         remoteAccess = true;

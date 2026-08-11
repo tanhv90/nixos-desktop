@@ -10,11 +10,16 @@ let
   cfg = config.${namespace}.ai-tools;
   llm-agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   droid = llm-agents.droid;
+  pi = llm-agents.pi;
   antigravity-cli = llm-agents.antigravity-cli;
 in
 {
   options.${namespace}.ai-tools = {
-    enable = lib.mkEnableOption "AI dev tools (Claude Code, Droid, Antigravity CLI)";
+    enable = lib.mkEnableOption "AI dev tools (master switch)";
+    droid.enable = lib.mkEnableOption "Droid agent from llm-agents.nix";
+    pi.enable = lib.mkEnableOption "Pi agent from llm-agents.nix";
+    antigravity-cli.enable = lib.mkEnableOption "Antigravity CLI from llm-agents.nix";
+    claude-code.enable = lib.mkEnableOption "Claude Code (Anthropic)";
     daemon = {
       enable = lib.mkEnableOption "Droid daemon (background service)";
       remoteAccess = lib.mkEnableOption "Allow remote access to droid daemon";
@@ -22,13 +27,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [
-      pkgs.claude-code
-      droid
-      antigravity-cli
-    ];
+    home.packages =
+      lib.optional cfg.droid.enable droid
+      ++ lib.optional cfg.pi.enable pi
+      ++ lib.optional cfg.antigravity-cli.enable antigravity-cli
+      ++ lib.optional cfg.claude-code.enable pkgs.claude-code;
 
-    systemd.user.services.droid = lib.mkIf cfg.daemon.enable {
+    systemd.user.services.droid = lib.mkIf (cfg.daemon.enable && cfg.droid.enable) {
       Unit = {
         Description = "Droid daemon for AI agent control";
         After = [ "network-online.target" ];
