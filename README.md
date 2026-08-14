@@ -20,7 +20,6 @@ flake.nix
 ├── modules/
 │   ├── nixos/   → system modules (auto-loaded)
 │   └── home/    → user modules (auto-loaded)
-├── overlays/    → package overlays (opencode)
 └── secrets/     → SOPS-encrypted (age)
 ```
 
@@ -28,7 +27,8 @@ Modules are auto-discovered — no manual imports. Each module exposes `kbb.<nam
 
 ## AI Tools
 
-All from `github:numtide/llm-agents.nix`. Each tool has its own toggle under the master `ai-tools.enable`:
+Droid, Pi, Antigravity CLI, and OpenCode 2 all come directly from
+`github:numtide/llm-agents.nix` (no overlays). Each tool has its own toggle under the master `ai-tools.enable`:
 
 ```nix
 kbb.ai-tools = {
@@ -39,6 +39,16 @@ kbb.ai-tools = {
   claude-code.enable = true;       # Claude Code
   daemon.enable = true;            # Droid background service
   daemon.remoteAccess = true;
+};
+
+# OpenCode 2 (serve daemon) — package from llm-agents.nix#opencode2.
+# Note: opencode2 dropped the --cors flag / "*" wildcard — set explicit
+# `cors` origins if a cross-origin web client needs access.
+kbb.opencode = {
+  enable = true;
+  port = 12121;
+  hostname = "0.0.0.0";
+  auth.passwordFile = "/run/secrets/opencode/password";
 };
 ```
 
@@ -68,7 +78,6 @@ kbb.ai-tools = {
         ./systems/x86_64-linux/Desktop
         ./modules/nixos                      # auto-loads all nixos modules
         { nixpkgs.config.allowUnfree = true; }
-        { nixpkgs.overlays = [ (import ./overlays/opencode { }) ]; }
 
         home-manager.nixosModules.home-manager {
           home-manager = {

@@ -66,12 +66,7 @@
           ./systems/x86_64-linux/Desktop
           ./modules/nixos
 
-          {
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [
-              ((import ./overlays/opencode) { })
-            ];
-          }
+          { nixpkgs.config.allowUnfree = true; }
 
           home-manager.nixosModules.home-manager
           {

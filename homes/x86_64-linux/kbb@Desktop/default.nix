@@ -44,7 +44,8 @@
       enable = true;
       port = 12121;
       hostname = "0.0.0.0";
-      cors = "*";
+      # opencode2: no --cors / "*" wildcard; add explicit origins if a
+      # cross-origin web client needs access (server.cors).
       auth.passwordFile = "/run/secrets/opencode/password";
     };
   };
