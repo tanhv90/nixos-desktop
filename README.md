@@ -36,6 +36,7 @@ kbb.ai-tools = {
   droid.enable = true;             # Droid + daemon
   pi.enable = true;                # Pi
   antigravity-cli.enable = true;   # Antigravity CLI
+  dsh.enable = true;               # DeepSeek harness (dsh)
   claude-code.enable = true;       # Claude Code
   daemon.enable = true;            # Droid background service
   daemon.remoteAccess = true;

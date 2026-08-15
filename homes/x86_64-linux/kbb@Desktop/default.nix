@@ -18,6 +18,7 @@
       droid.enable = true;
       pi.enable = true;
       antigravity-cli.enable = true;
+      dsh.enable = true;
       claude-code.enable = true;
       daemon = {
         enable = true;
