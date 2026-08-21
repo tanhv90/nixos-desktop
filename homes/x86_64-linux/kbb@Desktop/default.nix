@@ -19,6 +19,7 @@
       pi.enable = true;
       antigravity-cli.enable = true;
       dsh.enable = true;
+      omp.enable = true;
       claude-code.enable = true;
       daemon = {
         enable = true;
