@@ -38,6 +38,7 @@ kbb.ai-tools = {
   antigravity-cli.enable = true;   # Antigravity CLI
   dsh.enable = true;               # DeepSeek harness (dsh)
   omp.enable = true;               # OMP agent
+  hermes-agent.enable = true;      # Hermes agent
   claude-code.enable = true;       # Claude Code
   daemon.enable = true;            # Droid background service
   daemon.remoteAccess = true;

@@ -8,7 +8,7 @@
     starship.enable = true;
     zellij.enable = true;
     herdr.enable = true;
-    ghostty.enable = true;
+    wezterm.enable = true;
     fastfetch.enable = true;
     vscode.enable = true;
     git.enable = true;
@@ -20,6 +20,7 @@
       antigravity-cli.enable = true;
       dsh.enable = true;
       omp.enable = true;
+      hermes-agent.enable = true;
       claude-code.enable = true;
       daemon = {
         enable = true;

@@ -14,6 +14,7 @@ let
   antigravity-cli = llm-agents.antigravity-cli;
   dsh = llm-agents.dsh;
   omp = llm-agents.omp;
+  hermes-agent = llm-agents.hermes-agent;
 in
 {
   options.${namespace}.ai-tools = {
@@ -23,6 +24,7 @@ in
     antigravity-cli.enable = lib.mkEnableOption "Antigravity CLI from llm-agents.nix";
     dsh.enable = lib.mkEnableOption "DeepSeek harness (dsh) from llm-agents.nix";
     omp.enable = lib.mkEnableOption "OMP agent from llm-agents.nix";
+    hermes-agent.enable = lib.mkEnableOption "Hermes agent from llm-agents.nix";
     claude-code.enable = lib.mkEnableOption "Claude Code (Anthropic)";
     daemon = {
       enable = lib.mkEnableOption "Droid daemon (background service)";
@@ -37,6 +39,7 @@ in
       ++ lib.optional cfg.antigravity-cli.enable antigravity-cli
       ++ lib.optional cfg.dsh.enable dsh
       ++ lib.optional cfg.omp.enable omp
+      ++ lib.optional cfg.hermes-agent.enable hermes-agent
       ++ lib.optional cfg.claude-code.enable pkgs.claude-code;
 
     systemd.user.services.droid = lib.mkIf (cfg.daemon.enable && cfg.droid.enable) {
