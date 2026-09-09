@@ -35,6 +35,10 @@
     ssh.enable = true;
     sunshine.enable = true;
     fonts.enable = true;
+    flatpak = {
+      enable = true;
+      packages = [ "org.telegram.desktop" ];
+    };
   };
 
   # Timezone

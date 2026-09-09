@@ -28,7 +28,7 @@
         remoteAccess = true;
       };
     };
-    telegram.enable = true;
+    telegram.enable = false; # replaced by Flatpak org.telegram.desktop (kbb.flatpak)
     _1password.enable = true;
     mpv.enable = true;
     obs.enable = true;
