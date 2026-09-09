@@ -15,6 +15,7 @@ let
   dsh = llm-agents.dsh;
   omp = llm-agents.omp;
   hermes-agent = llm-agents.hermes-agent;
+  orca = llm-agents.orca;
 in
 {
   options.${namespace}.ai-tools = {
@@ -25,6 +26,7 @@ in
     dsh.enable = lib.mkEnableOption "DeepSeek harness (dsh) from llm-agents.nix";
     omp.enable = lib.mkEnableOption "OMP agent from llm-agents.nix";
     hermes-agent.enable = lib.mkEnableOption "Hermes agent from llm-agents.nix";
+    orca.enable = lib.mkEnableOption "Orca agent from llm-agents.nix";
     claude-code.enable = lib.mkEnableOption "Claude Code (Anthropic)";
     daemon = {
       enable = lib.mkEnableOption "Droid daemon (background service)";
@@ -40,6 +42,7 @@ in
       ++ lib.optional cfg.dsh.enable dsh
       ++ lib.optional cfg.omp.enable omp
       ++ lib.optional cfg.hermes-agent.enable hermes-agent
+      ++ lib.optional cfg.orca.enable orca
       ++ lib.optional cfg.claude-code.enable pkgs.claude-code;
 
     systemd.user.services.droid = lib.mkIf (cfg.daemon.enable && cfg.droid.enable) {

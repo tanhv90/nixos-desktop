@@ -21,6 +21,7 @@
       dsh.enable = true;
       omp.enable = true;
       hermes-agent.enable = true;
+      orca.enable = true;
       claude-code.enable = true;
       daemon = {
         enable = true;
