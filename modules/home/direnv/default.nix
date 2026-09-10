@@ -22,13 +22,6 @@ in
       config = {
         hide_env_diff = true;
       };
-      stdlib = ''
-        # Use flake's devShell automatically when entering a flake directory.
-        use_flake() {
-          watch_file flake.nix flake.lock
-          eval "$(nix print-dev-env --impure)"
-        }
-      '';
     };
   };
 }
