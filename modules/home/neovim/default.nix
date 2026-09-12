@@ -21,7 +21,8 @@ in
       enable = true;
       nixpkgs.source = inputs.nixvim.inputs.nixpkgs;
 
-      defaultEditor = true;
+      # Helix is the default editor (kbb.helix); launch nvim explicitly.
+      defaultEditor = false;
 
       globals.mapleader = " ";
 

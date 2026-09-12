@@ -34,6 +34,7 @@
     cups.enable = true;
     ssh.enable = true;
     sunshine.enable = true;
+    steam.enable = true;
     fonts.enable = true;
   };
 

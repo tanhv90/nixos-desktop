@@ -16,12 +16,13 @@
     ai-tools = {
       enable = true;
       droid.enable = true;
-      pi.enable = true;
+      pi.enable = false; # temporarily disabled
       antigravity-cli.enable = true;
       dsh.enable = true;
-      omp.enable = true;
+      omp.enable = false; # temporarily disabled
       hermes-agent.enable = true;
       orca.enable = true;
+      grok.enable = true;
       claude-code.enable = true;
       daemon = {
         enable = true;
@@ -37,6 +38,8 @@
     python.enable = true;
     cli-tools.enable = true;
     direnv.enable = true;
+    yazi.enable = true;
+    helix.enable = true;
     onlyoffice.enable = true;
     calibre.enable = true;
     rustdesk.enable = true;
@@ -56,7 +59,7 @@
 
   home = {
     sessionVariables = {
-      EDITOR = "nvim";
+      EDITOR = "hx";
       SSH_AUTH_SOCK = "$HOME/.1password/agent.sock";
       # Make Chromium-family browsers (Edge, Chrome) run natively on Wayland
       # instead of XWayland — fixes flicker on KDE Plasma 6 + NVIDIA.
