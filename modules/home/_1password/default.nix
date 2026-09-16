@@ -22,5 +22,10 @@ in
         };
       }))
     ];
+
+    # Keep the 1Password SSH agent as the default for all hosts (replaces the
+    # block the 1Password app writes into ~/.ssh/config). github.com overrides
+    # this with the sops-deployed key in the git module.
+    programs.ssh.settings."*".IdentityAgent = "~/.1password/agent.sock";
   };
 }

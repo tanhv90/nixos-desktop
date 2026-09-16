@@ -125,6 +125,10 @@
     secrets."opencode/password" = {
       owner = "kbb";
     };
+    # Dedicated GitHub SSH key for AI agents / headless git (not 1Password)
+    secrets."github/ssh_private_key" = {
+      owner = "kbb";
+    };
   };
 
   # User account
@@ -138,6 +142,12 @@
   };
 
   programs.zsh.enable = true;
+
+  # Pin GitHub's host key so headless agents never hit an interactive prompt
+  programs.ssh.knownHosts."github.com" = {
+    hostNames = [ "github.com" ];
+    publicKey = "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+  };
 
   # Nix LD — provide standard FHS lib paths for pre-built binaries (uv, etc.)
   programs.nix-ld.enable = true;

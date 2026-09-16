@@ -16,7 +16,7 @@
     ai-tools = {
       enable = true;
       droid.enable = true;
-      pi.enable = false; # temporarily disabled
+      pi.enable = true;
       antigravity-cli.enable = true;
       dsh.enable = true;
       omp.enable = false; # temporarily disabled
