@@ -54,19 +54,13 @@
     networkmanager.enable = true;
   };
 
-  # KDE Plasma 6 + Wayland
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-  };
+  # COSMIC desktop (1.8 in nixos-unstable) + its native greeter (greetd-based)
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
 
-  # XDG desktop portal — required for RustDesk PipeWire screen capture on Wayland
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
-    config.common.default = "kde";
-  };
+  # Portals: the cosmic desktop module configures xdg.portal with
+  # xdg-desktop-portal-cosmic + -gtk. RustDesk PipeWire screen capture on
+  # Wayland goes through the cosmic screencast portal.
 
   # Audio (PipeWire)
   security.rtkit.enable = true;
