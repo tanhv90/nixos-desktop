@@ -111,6 +111,13 @@
 
   # SOPS secrets
   sops = {
+    # sops-nix master (13616fff) still builds sops-install-secrets with
+    # buildGo125Module, which nixpkgs removed when Go 1.25 went EOL.
+    # Build with the current Go 1.26 builder until Mic92/sops-nix#984 merges.
+    package = pkgs.callPackage "${inputs.sops-nix}/pkgs/sops-install-secrets" {
+      buildGo125Module = pkgs.buildGo126Module;
+      vendorHash = "sha256-SXOd+0yh0DQr3uLVQBdw07J9j5HNuFJSOajDul1B1qo=";
+    };
     defaultSopsFile = ../../../secrets/secrets.yaml;
     age.keyFile = "/var/lib/sops/age/keys.txt";
     secrets."user/kbb_hashed_password".neededForUsers = true;
