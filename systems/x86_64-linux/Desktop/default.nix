@@ -179,6 +179,7 @@
     usbutils
     lm_sensors
     smartmontools
+    wl-clipboard-rs
   ];
 
   system.stateVersion = "24.11";
