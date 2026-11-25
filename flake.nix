@@ -42,10 +42,26 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # herdr's own lock pins an old rust-overlay (2026-07-09) whose
+    # mk-aggregated.nix still reads the deprecated stdenv.isLinux/isDarwin
+    # aliases. Override it with a direct input so `nix flake update` also
+    # updates it (upstream fixed this on 2026-08-13 in 892c035).
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     herdr = {
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.follows = "rust-overlay";
     };
+
+    # Not in nixpkgs: Mandara ships only as this flake. Its nixpkgs input is
+    # deliberately not followed — the package we install is the one its own
+    # lock builds, which is what mandara.cachix.org has prebuilt. Following
+    # our nixpkgs would compile the whole Rust shell from source.
+    mandara.url = "github:theHamdiz/mandara";
   };
 
   outputs =
@@ -66,7 +82,14 @@
           ./systems/x86_64-linux/Desktop
           ./modules/nixos
 
-          { nixpkgs.config.allowUnfree = true; }
+          {
+            nixpkgs.config = {
+              allowUnfree = true;
+              # onlyoffice-desktopeditors still lists gtk2 in buildInputs in nixpkgs
+              # (https://github.com/NixOS/nixpkgs/issues/410814)
+              problems.handlers."gtk+".broken = "warn";
+            };
+          }
 
           home-manager.nixosModules.home-manager
           {
@@ -77,6 +100,7 @@
               # mirroring snowfall-lib's module discovery.
               sharedModules = [
                 ./modules/home
+                inputs.mandara.homeManagerModules.default
               ];
               users.kbb = import ./homes/x86_64-linux/${"kbb@Desktop"};
               extraSpecialArgs = {

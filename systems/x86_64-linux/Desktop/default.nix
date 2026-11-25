@@ -10,6 +10,7 @@
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.fcitx5-lotus.nixosModules.fcitx5-lotus
+    inputs.mandara.nixosModules.default
     ./hardware.nix
     ./disk.nix
   ];
@@ -55,13 +56,31 @@
     networkmanager.enable = true;
   };
 
-  # COSMIC desktop (1.8 in nixos-unstable) + its native greeter (greetd-based)
+  # Umbriel (wlroots compositor) is the session this machine logs into.
+  # COSMIC stays installed on purpose: its module supplies the portals and
+  # session services, and it remains selectable in the greeter as a fallback.
+  # Nothing from it runs unless you pick the COSMIC session at login. To drop
+  # it completely, set services.desktopManager.cosmic.enable = false and
+  # remove "cosmic" from the session list below.
+  programs.umbriel.enable = true;
   services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
+  services.displayManager.defaultSession = "umbriel";
+
+  # Login screen: Mandara Login (GPUI, greetd + cage) instead of a TUI.
+  # The module wires greetd itself, registers the `mandara-lock` PAM service,
+  # and defaults the fonts/services/portal pieces to what Mandara's Studio
+  # expects (all mkDefault, so the COSMIC desktop module keeps its choices).
+  # The package is pinned to the flake's cached build: the module default
+  # would compile the shell with our nixpkgs.
+  programs.mandara = {
+    enable = true;
+    package = inputs.mandara.packages.${pkgs.stdenv.hostPlatform.system}.mandara;
+    greeter.enable = true;
+  };
 
   # Portals: the cosmic desktop module configures xdg.portal with
-  # xdg-desktop-portal-cosmic + -gtk. RustDesk PipeWire screen capture on
-  # Wayland goes through the cosmic screencast portal.
+  # xdg-desktop-portal-cosmic + -gtk; programs.umbriel adds
+  # xdg-desktop-portal-umbriel for screen sharing under Umbriel.
 
   # Audio (PipeWire)
   security.rtkit.enable = true;
@@ -88,13 +107,9 @@
       modesetting.enable = true;
       open = false;
       nvidiaSettings = true;
-      # Frozen 580 branch. Has explicit-sync (≥555) so KDE Plasma 6 Wayland
-      # works without Qt-Wayland xdg_surface crashes (Telegram, etc.). Pinned
-      # to legacy_580 rather than `stable` so `nix flake update` only bumps
-      # within the 580.x line — no surprise jumps to 600+. CUDA 12 Docker
-      # images run via nvidia-container-toolkit forward-compat — verify with
-      # `docker run --gpus all <image> nvidia-smi` after rebuild.
-      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+      # No `package` pin — uses nixpkgs default (newest production driver),
+      # same as the /mnt/data/nixos-config checkout. Verify with
+      # `nvidia-smi` and `docker run --gpus all <image> nvidia-smi` after rebuild.
     };
   };
 
@@ -144,10 +159,52 @@
     publicKey = "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
   };
 
-  # Nix LD — provide standard FHS lib paths for pre-built binaries (uv, etc.)
+  # Nix LD — provide standard FHS lib paths for pre-built binaries (uv, etc.).
+  # The GTK/Electron set below lets apps installed outside Nix — notably
+  # Factory Desktop, installed by its own .sh installer into
+  # ~/.local/share/factory-desktop — find their runtime libraries.
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     stdenv.cc.cc.lib
+
+    # Electron (Chromium) runtime
+    alsa-lib
+    at-spi2-atk
+    at-spi2-core
+    atk
+    cairo
+    cups
+    dbus
+    expat
+    fontconfig
+    freetype
+    gdk-pixbuf
+    glib
+    gtk3
+    harfbuzz
+    libdrm
+    libgbm
+    libGL
+    libnotify
+    libpulseaudio
+    libsecret
+    libxkbcommon
+    nspr
+    nss
+    pango
+    libx11
+    libxcomposite
+    libxcursor
+    libxdamage
+    libxext
+    libxfixes
+    libxi
+    libxrandr
+    libxrender
+    libxscrnsaver
+    libxtst
+    libxcb
+    libxshmfence
   ];
 
   # Nix settings
@@ -164,6 +221,14 @@
       ];
       trusted-users = [ "root" "kbb" ];
       auto-optimise-store = true;
+      extra-substituters = [
+        "https://cache.numtide.com"
+        "https://mandara.cachix.org"
+      ];
+      extra-trusted-public-keys = [
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+        "mandara.cachix.org-1:oOp26vScHzVwCDKAGScpvgPFE8r06UQpDyCdA5u1gh8="
+      ];
     };
   };
 

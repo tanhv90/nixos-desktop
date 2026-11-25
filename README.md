@@ -11,6 +11,26 @@ NixOS flake — one repo, modular config. Auto-discovers `modules/{nixos,home}/*
 | RAM | 32GB DDR4 |
 | Disk | NVMe 0: ESP + swap + btrfs (`@`, `@home`) — NVMe 1: NTFS → `/mnt/data` |
 
+## Desktop session
+
+Umbriel (wlroots compositor) is the session this host logs into, with Mandara
+as the shell (bar, dock, OSDs, notifications). COSMIC is still installed but
+only appears as a fallback choice in the login menu — nothing from it runs
+unless it is picked there.
+
+| Where | What |
+|-------|------|
+| `systems/.../Desktop` | `programs.umbriel.enable`, `services.displayManager.defaultSession = "umbriel"`, `programs.mandara.greeter.enable` (Mandara Login on greetd + cage) |
+| `modules/home/umbriel` | `~/.config/umbriel/config.toml`: Mandara autostart, its generated drop-in as an optional include, and the full keybind set (wezterm on `Mod+Return`, Mandara launcher on `Mod`) |
+| `modules/home/mandara` | the shell package, from Mandara's flake (binary cache) |
+
+Run `mandara setup --compositor umbriel` once inside the session to write
+`~/.config/mandara/generated/umbriel.toml` (the optional include picks it up
+live). Preview the login screen with `mandara greeter --demo`, restyle it in
+`mandara studio "login screen"`. To go back to COSMIC as the default, set
+`services.displayManager.defaultSession = "cosmic"`; to remove it entirely,
+also set `services.desktopManager.cosmic.enable = false`.
+
 ## Structure
 
 ```
@@ -39,6 +59,9 @@ kbb.ai-tools = {
   dsh.enable = true;               # DeepSeek harness (dsh)
   omp.enable = true;               # OMP agent
   hermes-agent.enable = true;      # Hermes agent
+  orca.enable = true;              # Orca agent
+  grok.enable = true;              # Grok agent
+  claude-desktop.enable = true;    # Claude Desktop app
   claude-code.enable = true;       # Claude Code
   daemon.enable = true;            # Droid background service
   daemon.remoteAccess = true;
@@ -113,3 +136,4 @@ Add `systems/x86_64-linux/<Host>/` and `homes/x86_64-linux/kbb@<Host>/`, enable 
 - [Fresh install](docs/install.md)
 - [SOPS secrets](docs/sops.md)
 - [Chroot rebuild](docs/chroot-rebuild.md)
+- [GUI automation & computer-use](docs/computer-use.md)

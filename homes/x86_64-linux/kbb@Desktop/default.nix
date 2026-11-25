@@ -23,9 +23,12 @@
       hermes-agent.enable = true;
       orca.enable = true;
       grok.enable = true;
+      claude-desktop.enable = true;
       claude-code.enable = true;
       daemon = {
-        enable = true;
+        # Disabled: the daemon fails without a registered computer and
+        # restart-looped every 5s.
+        enable = false;
         remoteAccess = true;
       };
     };
@@ -43,6 +46,13 @@
     onlyoffice.enable = true;
     calibre.enable = true;
     rustdesk.enable = true;
+    mandara = {
+      enable = true;
+      # Started by Umbriel's autostart (modules/home/umbriel) instead of a
+      # systemd unit, so it lives in the compositor's own session scope.
+      systemd = false;
+    };
+    umbriel.enable = true;
     discord.enable = true;
     appimage.enable = true;
     neovim.enable = true;
